@@ -1,0 +1,42 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+group = 'org.nyxcode.wurm'
+
+version = '0.1'
+
+description = "A mod that acts as a discord relay between Wurm kingdom chat and a discord server"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+
+
+repositories {
+        
+     maven { url "http://jcenter.bintray.com" }
+     maven { url "http://gotti.no-ip.org/maven/repository" }
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    compile 'net.dv8tion:JDA:3.3.1_289'
+    compile 'org.gotti.wurmunlimited:server-modlauncher:0.29.2'
+}
+
+shadowJar {
+    dependencies {
+        exclude(dependency('org.gotti.wurmunlimited:server-modlauncher:0.29.2'))
+        exclude(dependency('org.gotti.wurmunlimited:common:2182584'))
+        exclude(dependency('org.gotti.wurmunlimited:server:2182584'))
+    }
+}
