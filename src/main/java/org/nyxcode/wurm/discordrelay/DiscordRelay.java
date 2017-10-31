@@ -32,6 +32,7 @@ public class DiscordRelay extends ListenerAdapter implements WurmServerMod, PreI
     private String botToken;
     private String serverName;
     private String wurmBotName;
+    private boolean useUnderscore;
 
 
     public void preInit() {
@@ -50,16 +51,17 @@ public class DiscordRelay extends ListenerAdapter implements WurmServerMod, PreI
         botToken = properties.getProperty("botToken");
         serverName = properties.getProperty("discordServerName");
         wurmBotName = properties.getProperty("wurmBotName");
+        useUnderscore = Boolean.parseBoolean(properties.getProperty("useUnderscore", "false"));
     }
 
     public MessagePolicy onKingdomMessage(Message message) {
         byte kingdomId = message.getSender().getKingdomId();
         Kingdom kingdom = Kingdoms.getKingdom(kingdomId);
-        String kingdomName = kingdom.getName();
+        String kingdomName = discordifyName(kingdom.getName());
         MessageBuilder builder = new MessageBuilder();
 
         builder.append(message.getMessage());
-        jda.getGuildsByName(serverName, true).get(0).getTextChannelsByName(kingdomName.toLowerCase(), true).get(0).sendMessage(builder.build()).queue();
+        jda.getGuildsByName(serverName, true).get(0).getTextChannelsByName(kingdomName, true).get(0).sendMessage(builder.build()).queue();
 
         return MessagePolicy.PASS;
     }
@@ -71,7 +73,7 @@ public class DiscordRelay extends ListenerAdapter implements WurmServerMod, PreI
         byte kingdomId = -1;
 
         for (Kingdom kingdom : kingdoms) {
-            if (kingdom.getName().toLowerCase().equals(channel.toLowerCase())) {
+            if (discordifyName(kingdom.getName()).equals(channel.toLowerCase())) {
                 kingdomId = kingdom.getId();
             }
         }
@@ -110,6 +112,15 @@ public class DiscordRelay extends ListenerAdapter implements WurmServerMod, PreI
         if (event.isFromType(ChannelType.TEXT) && !event.getAuthor().isBot()) {
             String name = event.getTextChannel().getName();
             sendToGlobalKingdomChat(name, "<" + event.getAuthor().getName() + "> " + event.getMessage().getContent());
+        }
+    }
+
+    private String discordifyName(String name) {
+        name = name.toLowerCase();
+        if (useUnderscore) {
+            return name.replace(" ", "_");
+        } else {
+            return name.replace(" ", "");
         }
     }
 }
