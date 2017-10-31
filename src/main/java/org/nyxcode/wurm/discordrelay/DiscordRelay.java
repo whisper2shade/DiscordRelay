@@ -36,11 +36,13 @@ public class DiscordRelay extends ListenerAdapter implements WurmServerMod, PreI
 
 
     public void preInit() {
+        initJDA();
+    }
+
+    private void initJDA() {
         try {
-            jda = new JDABuilder(AccountType.BOT).setToken(botToken).addEventListener(this).buildBlocking();
+            jda = new JDABuilder(AccountType.BOT).setToken(botToken).addEventListener(this).buildAsync();
         } catch (LoginException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (RateLimitedException e) {
             e.printStackTrace();
