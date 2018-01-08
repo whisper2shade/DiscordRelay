@@ -30,12 +30,12 @@ repositories {
 }
 dependencies {
     compile 'net.dv8tion:JDA:3.3.1_289'
-    compile 'org.gotti.wurmunlimited:server-modlauncher:0.29.2'
+    compile 'org.gotti.wurmunlimited:server-modlauncher:0.32.2'
 }
 
 shadowJar {
     dependencies {
-        exclude(dependency('org.gotti.wurmunlimited:server-modlauncher:0.29.2'))
+        exclude(dependency('org.gotti.wurmunlimited:server-modlauncher:0.32.2'))
         exclude(dependency('org.gotti.wurmunlimited:common:2182584'))
         exclude(dependency('org.gotti.wurmunlimited:server:2182584'))
     }

@@ -4,6 +4,7 @@ import com.wurmonline.server.Message;
 import com.wurmonline.server.Server;
 import com.wurmonline.server.Servers;
 import com.wurmonline.server.WurmId;
+import com.wurmonline.server.creatures.Communicator;
 import com.wurmonline.server.kingdom.Kingdom;
 import com.wurmonline.server.kingdom.Kingdoms;
 import com.wurmonline.server.villages.PvPAlliance;
@@ -31,11 +32,12 @@ import java.util.*;
 /**
  * Created by whisper2shade on 22.04.2017.
  */
-public class DiscordRelay extends ListenerAdapter implements WurmServerMod, PreInitable, Configurable, ChannelMessageListener, ServerStartedListener {
+public class DiscordRelay extends ListenerAdapter implements WurmServerMod, PreInitable, Configurable, ChannelMessageListener, PlayerMessageListener, ServerStartedListener {
 
-    ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.ENGLISH);
+
 
     private JDA jda;
+    private RelayConfig config;
     private String botToken;
     private String serverName;
     private String wurmBotName;
@@ -43,9 +45,19 @@ public class DiscordRelay extends ListenerAdapter implements WurmServerMod, PreI
     private Guild guild;
 
 
+    public void configure(Properties properties) {
+        config = new RelayConfig(properties);
+
+
+        botToken = properties.getProperty("botToken");
+        serverName = properties.getProperty("discordServerName");
+        wurmBotName = properties.getProperty("wurmBotName");
+        useUnderscore = Boolean.parseBoolean(properties.getProperty("useUnderscore", "false"));
+    }
+
     public void preInit() {
         initJDA();
-        guild = jda.getGuildsByName(serverName, true).get(0);
+        DiscordManager discordManager = new DiscordManager(jda, config);
     }
 
     public void onServerStarted() {
@@ -53,43 +65,7 @@ public class DiscordRelay extends ListenerAdapter implements WurmServerMod, PreI
         createVillageChannels();
     }
 
-    private void createKingdomChannels() {
-        List<Kingdom> kingdoms = Arrays.asList(Kingdoms.getAllKingdoms());
-        Category category = createOrGetCategory(resourceBundle.getString("core.category.kingdoms"));
-        for (Kingdom kingdom : kingdoms) {
-            ensureChannel(category, kingdom.getName());
-        }
-    }
 
-    private void ensureChannel(Category category, String entityName) {
-        String channelName = discordifyName(entityName);
-        List<TextChannel> channels = guild.getTextChannelsByName(channelName, true);
-        if (channels.isEmpty()) {
-            category.createTextChannel(channelName).complete();
-        }
-    }
-
-    private Category createOrGetCategory(String name) {
-        GuildController controller = guild.getController();
-
-        List<Category> categories = guild.getCategoriesByName(name, true);
-        Category category;
-        if (categories.isEmpty()) {
-            controller.createCategory(name).complete();
-            category = guild.getCategoriesByName(name, true).get(0);
-        } else {
-            category = categories.get(0);
-        }
-        return category;
-    }
-
-    private void createVillageChannels() {
-        List<Village> villages = Arrays.asList(Villages.getVillages());
-        Category category = createOrGetCategory(resourceBundle.getString("core.category.villages"));
-        for (Village village : villages) {
-            ensureChannel(category, village.getName());
-        }
-    }
 
     private void initJDA() {
         try {
@@ -101,13 +77,6 @@ public class DiscordRelay extends ListenerAdapter implements WurmServerMod, PreI
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    public void configure(Properties properties) {
-        botToken = properties.getProperty("botToken");
-        serverName = properties.getProperty("discordServerName");
-        wurmBotName = properties.getProperty("wurmBotName");
-        useUnderscore = Boolean.parseBoolean(properties.getProperty("useUnderscore", "false"));
     }
 
     public MessagePolicy onKingdomMessage(Message message) {
@@ -171,12 +140,12 @@ public class DiscordRelay extends ListenerAdapter implements WurmServerMod, PreI
         }
     }
 
-    private String discordifyName(String name) {
-        name = name.toLowerCase();
-        if (useUnderscore) {
-            return name.replace(" ", "_");
-        } else {
-            return name.replace(" ", "");
-        }
+
+    public MessagePolicy onPlayerMessage(Communicator communicator, String message, String title) {
+        return null;
+    }
+
+    public boolean onPlayerMessage(Communicator communicator, String message) {
+        return false;
     }
 }
