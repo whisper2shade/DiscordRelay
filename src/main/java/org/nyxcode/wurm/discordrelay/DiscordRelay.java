@@ -23,9 +23,21 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.dv8tion.jda.core.managers.GuildController;
+import org.dmfs.httpessentials.client.HttpRequestExecutor;
+import org.dmfs.httpessentials.httpurlconnection.HttpUrlConnectionExecutor;
+import org.dmfs.oauth2.client.*;
+import org.dmfs.rfc3986.encoding.Precoded;
+import org.dmfs.rfc3986.uris.LazyUri;
+import org.dmfs.rfc5545.Duration;
 import org.gotti.wurmunlimited.modloader.interfaces.*;
+import org.takes.facets.fork.FkRegex;
+import org.takes.facets.fork.TkFork;
+import org.takes.http.Exit;
+import org.takes.http.FtBasic;
 
 import javax.security.auth.login.LoginException;
+import java.io.IOException;
+import java.net.URI;
 import java.util.*;
 
 
@@ -35,7 +47,6 @@ import java.util.*;
 public class DiscordRelay extends ListenerAdapter implements WurmServerMod, PreInitable, Configurable, ChannelMessageListener, PlayerMessageListener, ServerStartedListener {
 
 
-
     private JDA jda;
     private RelayConfig config;
     private String botToken;
@@ -43,6 +54,8 @@ public class DiscordRelay extends ListenerAdapter implements WurmServerMod, PreI
     private String wurmBotName;
     private boolean useUnderscore;
     private Guild guild;
+    private OAuth2Client oAuth2Client;
+    private HttpRequestExecutor connectionExecutor;
 
 
     public void configure(Properties properties) {
@@ -57,14 +70,27 @@ public class DiscordRelay extends ListenerAdapter implements WurmServerMod, PreI
 
     public void preInit() {
         initJDA();
+        initOAuth();
+
+        try {
+            new FtBasic(
+                    new TkFork(new FkRegex("/oauth", "It's done")), 8080
+            ).start(Exit.NEVER);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         DiscordManager discordManager = new DiscordManager(jda, config);
+    }
+
+    private void initOAuth() {
+
     }
 
     public void onServerStarted() {
         createKingdomChannels();
         createVillageChannels();
     }
-
 
 
     private void initJDA() {

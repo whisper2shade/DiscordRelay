@@ -12,4 +12,16 @@ public class RelayConfig {
     public RelayConfig(@NotNull Properties properties) {
         this.properties = properties;
     }
+
+    public String clientId() {
+        return properties.getProperty("discordClientId");
+    }
+
+    public String clientSecret() {
+        return properties.getProperty("discordClientSecret");
+    }
+
+    public CharSequence redirectUrl() {
+        return properties.getProperty("discordRedirectUrl");
+    }
 }

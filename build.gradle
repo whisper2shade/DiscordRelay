@@ -23,20 +23,44 @@ targetCompatibility = 1.8
 
 
 repositories {
-        
-     maven { url "http://jcenter.bintray.com" }
-     maven { url "http://gotti.no-ip.org/maven/repository" }
-     maven { url "http://repo.maven.apache.org/maven2" }
+
+    mavenCentral()
+    jcenter()
+    maven { url "http://gotti.no-ip.org/maven/repository" }
 }
 dependencies {
-    compile 'net.dv8tion:JDA:3.3.1_289'
-    compile 'org.gotti.wurmunlimited:server-modlauncher:0.32.2'
+    compile 'net.dv8tion:JDA:3.8.0_436'
+    compile 'org.takes:takes:1.11.3'
+
+    // oauth2-essentials
+    compile 'org.dmfs:oauth2-essentials:0.10'
+    // optional to use httpurlconnection-executor, any other HttpRequestExecutor
+    // implementation will do
+    compile 'org.dmfs:httpurlconnection-executor:0.16.2'
+
+    compile 'com.google.oauth-client:google-oauth-client:1.23.0'
+    compile 'com.google.oauth-client:google-oauth-client-servlet:1.23.0'
+
+    // https://mvnrepository.com/artifact/com.google.code.gson/gson
+    compile 'com.google.code.gson:gson:2.8.5'
+
+    // https://mvnrepository.com/artifact/com.google.http-client/google-http-client
+    compile 'com.google.http-client:google-http-client:1.25.0'
+    // https://mvnrepository.com/artifact/com.google.http-client/google-http-client-jackson2
+    compile 'com.google.http-client:google-http-client-jackson2:1.25.0'
+
+
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
+    compile 'com.fasterxml.jackson.core:jackson-core:2.9.7'
+
+
+    compile 'org.gotti.wurmunlimited:server-modlauncher:0.40'
 }
 
 shadowJar {
     dependencies {
-        exclude(dependency('org.gotti.wurmunlimited:server-modlauncher:0.32.2'))
-        exclude(dependency('org.gotti.wurmunlimited:common:2182584'))
-        exclude(dependency('org.gotti.wurmunlimited:server:2182584'))
+        exclude(dependency('org.gotti.wurmunlimited:server-modlauncher:0.40'))
+        exclude(dependency('org.gotti.wurmunlimited:common:3127452'))
+        exclude(dependency('org.gotti.wurmunlimited:server:3127452'))
     }
 }

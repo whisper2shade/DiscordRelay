@@ -6,6 +6,7 @@ import com.wurmonline.server.villages.Village;
 import com.wurmonline.server.villages.Villages;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.Category;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.managers.GuildController;
 
@@ -16,13 +17,14 @@ import java.util.ResourceBundle;
 
 public class DiscordManager {
 
+    private final Guild guild;
     ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", Locale.ENGLISH);
     private boolean useUnderscore;
 
-    public DiscordManager(JDA jda, String server, boolean useUnderscore) {
+    public DiscordManager(JDA jda, Long serverID, boolean useUnderscore) {
         this.useUnderscore = useUnderscore;
 
-        guild = jda.getGuildsByName(serverName, true).get(0);
+        guild = jda.getGuildById(serverID);
     }
 
     private void createKingdomChannels() {
