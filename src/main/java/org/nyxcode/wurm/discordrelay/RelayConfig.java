@@ -1,15 +1,14 @@
 package org.nyxcode.wurm.discordrelay;
 
-import com.sun.istack.internal.NotNull;
+
 
 import java.util.Properties;
 
 public class RelayConfig {
 
-    @NotNull
     private Properties properties;
 
-    public RelayConfig(@NotNull Properties properties) {
+    public RelayConfig(Properties properties) {
         this.properties = properties;
     }
 
@@ -21,7 +20,19 @@ public class RelayConfig {
         return properties.getProperty("discordClientSecret");
     }
 
-    public CharSequence redirectUrl() {
+    public String redirectUrl() {
         return properties.getProperty("discordRedirectUrl");
+    }
+
+    public long serverId() {
+        return Long.parseLong(properties.getProperty("discordServerID"));
+    }
+
+    public String botToken() {
+        return properties.getProperty("botToken");
+    }
+
+    public boolean useUnderscore() {
+        return Boolean.parseBoolean(properties.getProperty("useUnderscore", "true"));
     }
 }
