@@ -8,9 +8,10 @@ public class DiscordUtils {
     public static String discordifyName(String name, boolean useUnderscore) {
         name = name.toLowerCase();
         if (useUnderscore) {
-            return name.replace(" ", "_");
+            name = name.replace(" ", "_");
         } else {
-            return name.replace(" ", "");
+            name = name.replace(" ", "");
         }
+        return name.replaceAll("[^0-9a-zA-Z-_]", "");
     }
 }

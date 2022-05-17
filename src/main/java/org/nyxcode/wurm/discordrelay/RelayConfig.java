@@ -1,12 +1,11 @@
 package org.nyxcode.wurm.discordrelay;
 
 
-
 import java.util.Properties;
 
 public class RelayConfig {
 
-    private Properties properties;
+    private final Properties properties;
 
     public RelayConfig(Properties properties) {
         this.properties = properties;
@@ -34,5 +33,13 @@ public class RelayConfig {
 
     public boolean useUnderscore() {
         return Boolean.parseBoolean(properties.getProperty("useUnderscore", "true"));
+    }
+
+    public boolean rumours() {
+        return Boolean.parseBoolean(properties.getProperty("rumours", "true"));
+    }
+
+    public int minCitizens() {
+        return Integer.parseInt(properties.getProperty("minCitizens", "5"));
     }
 }

@@ -25,23 +25,24 @@ targetCompatibility = 1.8
 repositories {
 
     mavenCentral()
-    jcenter()
+//    jcenter()
     maven { url "http://gotti.no-ip.org/maven/repository" }
+    maven { url 'https://jitpack.io' }
 }
 dependencies {
-    compile 'net.dv8tion:JDA:3.8.0_436'
+    compile 'net.dv8tion:JDA:5.0.0-alpha.10'
 //    compile 'org.takes:takes:1.11.3'
 
-    compile 'com.fasterxml.jackson.core:jackson-core:2.9.7'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.7'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.13.2'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.13.2'
 
 //    compile 'com.jsunsoft.http:http-request:1.0.1'
     // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
-    compile (group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.2.6') {
+    compile(group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.2.6') {
         force = true
     }
 // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore
-  compile(group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.2.4') {
+    compile(group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.2.4') {
         force = true
     }
 
@@ -49,13 +50,15 @@ dependencies {
     compile 'io.jsondb:jsondb-core:1.0.36'
 
 
-    compile 'org.gotti.wurmunlimited:server-modlauncher:0.40'
+    compile 'org.gotti.wurmunlimited:server-modlauncher:0.45'
+    compile 'com.github.Sindusk:sindusklibrary:v2.5'
 }
 
 shadowJar {
     dependencies {
-        exclude(dependency('org.gotti.wurmunlimited:server-modlauncher:0.40'))
-        exclude(dependency('org.gotti.wurmunlimited:common:3127452'))
-        exclude(dependency('org.gotti.wurmunlimited:server:3127452'))
+        exclude(dependency('org.gotti.wurmunlimited:server-modlauncher:0.45'))
+        exclude(dependency('org.gotti.wurmunlimited:common:4596061'))
+        exclude(dependency('org.gotti.wurmunlimited:server:4596061'))
+        exclude(dependency('org.javaassist:javaassist:3.23.1-GA'))
     }
 }

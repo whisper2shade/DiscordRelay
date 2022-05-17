@@ -51,9 +51,7 @@ public class TokenProcessor {
             });
 
             for (Connection connection : connections) {
-                if (!"steam".equals(connection.type())) {
-                    continue;
-                } else {
+                if ("steam".equals(connection.type())) {
                     long steamId = Long.parseLong(connection.id());
                     long discordId = user.id();
                     manager.addUser(discordId, steamId);
@@ -63,8 +61,10 @@ public class TokenProcessor {
 
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+            return "NOT OK (JSON)";
         } catch (IOException e) {
             e.printStackTrace();
+            return "NOT OK (IO)";
         }
 
         return "OK";

@@ -3,57 +3,34 @@ package org.nyxcode.wurm.discordrelay.oauth;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
-import net.dv8tion.jda.core.AccountType;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
-import org.nyxcode.wurm.discordrelay.DiscordManager;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.nyxcode.wurm.discordrelay.RelayConfig;
 import org.nyxcode.wurm.discordrelay.UserManager;
 
-import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
-import java.sql.SQLException;
 
 public class OAuthService extends ListenerAdapter {
 
     private final RelayConfig config;
-    private UserManager userManager;
+    private final UserManager userManager;
 
-    public OAuthService(RelayConfig config) throws IOException {
+    public OAuthService(RelayConfig config, UserManager userManager) {
         this.config = config;
+        this.userManager = userManager;
     }
 
 
     public void init() {
-        try {
-            userManager = new UserManager();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        JDA jda = null;
-        try {
-            jda = new JDABuilder(AccountType.BOT).setToken(config.botToken()).addEventListener(this).buildBlocking();
-        } catch (LoginException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        new DiscordManager(jda, config).init();
-
-
         HttpServer server = null;
         try {
             server = HttpServer.create(new InetSocketAddress(8080), 0);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        HttpContext context = server.createContext("/");
+        HttpContext context = server.createContext("/oauth");
         context.setHandler(this::handleRequest);
         server.start();
 

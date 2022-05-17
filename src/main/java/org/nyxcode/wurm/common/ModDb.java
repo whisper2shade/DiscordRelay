@@ -36,15 +36,13 @@ public class ModDb {
             if (v != SCHEMA_VER)
                 throw new RuntimeException(String.format("DB schema version unknown (%d), is this mod outdated?", v));
 
-            Runtime.getRuntime().addShutdownHook(new Thread() {
-                public void run() {
-                    try {
-                        connection.close();
-                    } catch (SQLException e) {
-                        logger.log(Level.WARNING, "Error closing DB", e);
-                    }
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    logger.log(Level.WARNING, "Error closing DB", e);
                 }
-            });
+            }));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
